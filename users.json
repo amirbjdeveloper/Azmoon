@@ -1,0 +1,23 @@
+[
+    {
+        "id": 1,
+        "full_name": "Amir",
+        "email": "Amir@gmail.com",
+        "mobile": "09121112222",
+        "password": "$2y$10$9lV48VQaLBbEYWsMlIGi4eyMX\/xdndW9dJ.YK9AtCQ8dBnc4hG1au"
+    },
+    {
+        "id": 2,
+        "full_name": "Amir",
+        "email": "Amir@gmail.com",
+        "mobile": "09121112222",
+        "password": "$2y$10$l1h6jfl4\/VThyuSHtSuTROBZaYLHVazhrF8gL0RswV2R.s8R5yWI2"
+    },
+    {
+        "id": 3,
+        "full_name": "Amir",
+        "email": "Amir@gmail.com",
+        "mobile": "09121112222",
+        "password": "$2y$10$5jskmjKxQT2A7ptOFcVsj.8IfsAyCIyFg9fMciVJWDWTZuNWQ1Kda"
+    }
+]
