@@ -37,10 +37,11 @@ class UsersTest extends TestCase
 
     public function test_should_update_the_inforamtion_of_user()
     {
+        $number = rand(1,100);
         $response = $this->call('PUT','api/v1/users',[
             'id' => '4',
-            'full_name' => 'Amir-updated',
-            'email' => 'Amirrrupdate@gmail.com',
+            'full_name' => 'Amir-updated-'.$number,
+            'email' => 'Amirrrupdate'.$number.'@gmail.com',
             'mobile' => '02121112222',
         ]);
 
@@ -61,5 +62,25 @@ class UsersTest extends TestCase
         $response = $this->call('PUT','api/v1/users',[]);
 
         $this->assertEquals(422,$response->status());
+    }
+
+    public function test_should_update_user_password()
+    {
+        $response = $this->call('PUT','api/v1/users/change-password',[
+            'id' => '2',
+            'password' => '@$$LLssoi983',
+            'password_reapet' => '@$$LLssoi983'
+        ]);
+
+        $this->assertEquals(200,$response->status());
+        $this->seeJsonStructure([
+            'success',
+            'message',
+            'data' => [
+                'full_name',
+                'email',
+                'mobile'
+            ]
+        ]);
     }
 }
