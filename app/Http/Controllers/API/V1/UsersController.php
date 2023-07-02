@@ -10,7 +10,6 @@ class UsersController extends ApiController
 {
     public function __construct(private UserRepositoryInterface $userRepository)
     {
-
     }
 
     public function store(Request $request)
@@ -69,14 +68,25 @@ class UsersController extends ApiController
             'password_reapet' => 'min:6'
         ]);
 
-        $this->userRepository->update($request->id,[
+        $this->userRepository->update($request->id, [
             'password' => app('hash')->make($request->password)
         ]);
 
-        return $this->respondSuccess('رمز عبور شما با موفقیت بروز رسانی شد.',[
+        return $this->respondSuccess('رمز عبور شما با موفقیت بروز رسانی شد.', [
             'full_name' => $request->full_name,
             'email' => $request->email,
             'mobile' => $request->mobile
         ]);
+    }
+
+    public function delete(Request $request)
+    {
+        $this->validate($request, [
+            'id' => 'required'
+        ]);
+
+        $this->userRepository->delete($request->id);
+
+        return $this->respondSuccess('کاربر با موفقیت حذف شد');
     }
 }

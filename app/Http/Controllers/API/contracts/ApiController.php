@@ -8,7 +8,7 @@ class ApiController extends Controller
 {
     protected $statusCode;
 
-    public function respondSuccess(string $message,array $data)
+    public function respondSuccess(string $message,array $data=null)
     {
         return $this->setStatusCode(200)->respond($message,true,$data);
     }
@@ -23,7 +23,7 @@ class ApiController extends Controller
         return $this->setStatusCode(404)->respond($message);
     }
 
-    public function respondCreated(string $message,array $data)
+    public function respondCreated(string $message,array $data=null)
     {
         return $this->setStatusCode(201)->respond($message,true,$data);
     }

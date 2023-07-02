@@ -35,13 +35,24 @@ class JsonBaseRepository implements RepositoryInterface
         file_put_contents('users.json', json_encode($users));
     }
 
+    public function delete(int $id)
+    {
+        $users = json_decode(file_get_contents('users.json'), true);
+        foreach ($users as $key => $user) {
+            if ($user['id'] == $id) {
+                unset($users[$key]);
+                break;
+            }
+        }
+        file_put_contents('users.json', json_encode(array_values($users)));
+    }
 
-    public function all(array $where)
+    public function deleteBy(array $where)
     {
 
     }
 
-    public function delete(array $where)
+    public function all(array $where)
     {
 
     }

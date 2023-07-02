@@ -21,7 +21,7 @@ class MongoBaseRepository implements RepositoryInterface
 
     }
 
-    public function delete(array $where)
+    public function delete(int $id)
     {
 
     }
@@ -29,5 +29,10 @@ class MongoBaseRepository implements RepositoryInterface
     public function find(int $id)
     {
         
+    }
+
+    public function deleteBy(array $where)
+    {
+
     }
 }

@@ -21,7 +21,12 @@ class MysqlBaseRepository implements RepositoryInterface
 
     }
 
-    public function delete(array $where)
+    public function delete(int $id)
+    {
+
+    }
+
+    public function deleteBy(array $where)
     {
 
     }
