@@ -111,4 +111,44 @@ class UsersTest extends TestCase
 
         $this->assertEquals(422,$response->status());
     }
+
+    public function test_should_get_users()
+    {
+        $pagesize = 3;
+        $response = $this->call('GET','api/v1/users',[
+            'page' => 1,
+            'pagesize' => $pagesize
+        ]);
+
+        $data = json_decode($response->getContent(),true);
+
+        $this->assertCount($pagesize,$data['data']);
+        $this->assertEquals(200,$response->status());
+        $this->seeJsonStructure([
+            'success',
+            'message',
+            'data'
+        ]);
+    }
+
+    public function test_should_get_filterd_users()
+    {
+        $pagesize = 3;
+        $userEmail = 'Amir@gmail.com';
+        $response = $this->call('GET','api/v1/users',[
+            'search' => $userEmail, 
+            'page' => 1,
+            'pagesize' => $pagesize
+        ]);
+
+        $data = json_decode($response->getContent(),true);
+
+        $this->assertEquals($data['data']['email'],$userEmail);
+        $this->assertEquals(200,$response->status());
+        $this->seeJsonStructure([
+            'success',
+            'message',
+            'data'
+        ]);
+    }
 }
