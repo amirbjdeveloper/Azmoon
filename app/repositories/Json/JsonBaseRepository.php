@@ -6,18 +6,21 @@ use App\repositories\Contracts\RepositoryInterface;
 
 class JsonBaseRepository implements RepositoryInterface
 {
+    protected $jsonModel;
+
     public function create(array $data)
     {
         $users = [];
-        if (file_exists('users.json')) {
-            $fileContents = file_get_contents('users.json');
+        if (file_exists($this->jsonModel)) {
+            $fileContents = file_get_contents($this->jsonModel);
             $users = !empty($fileContents) ? json_decode($fileContents, true) : [];
         }
         $data['id'] = empty($users) ? 1 : $users[count($users)-1]['id'] + 1;
         $index = array_search('full_name', array_keys($data));
         $data = array_merge(array_slice($data, 0, $index), ['id' => $data['id']], array_slice($data, $index));
         array_push($users, $data);
-        file_put_contents('users.json', json_encode($users));
+        file_put_contents($this->jsonModel, json_encode($users));
+        return $data;
     }
 
     public function update(int $id, array $data)
@@ -75,17 +78,24 @@ class JsonBaseRepository implements RepositoryInterface
         return array_slice($users,$offset,$pagesize);
     }
 
+    public function find(int $id)
+    {
+        $users = json_decode(file_get_contents(base_path().'/'.$this->jsonModel),true);
+
+        foreach ($users as $user) {
+            if ($user['id']==$id) {
+                return $user;
+            }
+        }
+        return [];
+    }
+
     public function deleteBy(array $where)
     {
 
     }
 
     public function all(array $where)
-    {
-
-    }
-
-    public function find(int $id)
     {
 
     }
