@@ -31,7 +31,7 @@ class UsersController extends ApiController
             'full_name' => 'required|string|min:3|max:255',
             'email' => 'required|email',
             'mobile' => 'required|string',
-            'password' => 'required'
+            'password' => 'min:6|required|regex:/^.*(?=.{3,})(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[\d\x])(?=.*[!$#%]).*$/'
         ]);
 
         $newUser = $this->userRepository->create([
@@ -59,17 +59,16 @@ class UsersController extends ApiController
             'mobile' => 'required|string'
         ]);
 
-        $this->userRepository->update($request->id, [
+        $user = $this->userRepository->update($request->id, [
             'full_name' => $request->full_name,
             'email' => $request->email,
             'mobile' => $request->mobile
         ]);
 
         return $this->respondSuccess('کاربر با موفقیت بروز رسانی شد!', [
-            'full_name' => $request->full_name,
-            'email' => $request->email,
-            'mobile' => $request->mobile,
-            'password' => $request->password
+            'full_name' => $user->getFullName(),
+            'email' => $user->getEmail(),
+            'mobile' => $user->getMobile()
         ]);
     }
 
@@ -81,14 +80,20 @@ class UsersController extends ApiController
             'password_reapet' => 'min:6'
         ]);
 
-        $this->userRepository->update($request->id, [
-            'password' => app('hash')->make($request->password)
-        ]);
+        try {
+            $user = $this->userRepository->update($request->id, [
+                'password' => app('hash')->make($request->password)
+            ]);
+    
+        } catch (\Exception $e) {
+            return $this->respondInternalError('کاربر بروز رسانی نشد');
+        }
 
+       
         return $this->respondSuccess('رمز عبور شما با موفقیت بروز رسانی شد.', [
-            'full_name' => $request->full_name,
-            'email' => $request->email,
-            'mobile' => $request->mobile
+            'full_name' => $user->getFullName(),
+            'email' => $user->getEmail(),
+            'mobile' => $user->getMobile()
         ]);
     }
 
@@ -98,10 +103,14 @@ class UsersController extends ApiController
             'id' => 'required'
         ]);
 
-        // $this->userRepository->delete($request->id);
+        if (!$this->userRepository->find($request->id)) {
+           return $this->respondNotFound('کاربری با این آیدی وجود ندارد');
+        }
 
-        $user = $this->userRepository->find($request->id);
-        dd($user->getID(),$user->getFullname(),$user->getEmail());
+        if (!$this->userRepository->delete($request->id)) {
+           return $this->respondInternalError('خطایی وجود دارد لطفا مجدد تلاش نمایید');
+        }
+
 
         return $this->respondSuccess('کاربر با موفقیت حذف شد');
     }

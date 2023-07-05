@@ -38,19 +38,20 @@ class JsonBaseRepository implements RepositoryInterface
         file_put_contents('users.json', json_encode($users));
     }
 
-    public function delete(int $id)
+    public function delete(int $id):bool
     {
         $users = json_decode(file_get_contents('users.json'), true);
         foreach ($users as $key => $user) {
             if ($user['id'] == $id) {
                 unset($users[$key]);
-                break;
+                return true;
             }
         }
         file_put_contents('users.json', json_encode(array_values($users)));
+        return false;
     }
 
-    public function paginate(string $search=null,int $page,int $pagesize=20)
+    public function paginate(string $search=null,int $page,int $pagesize=20): array
     {
         $users = json_decode(file_get_contents(base_path().'/users.json'),true);
 

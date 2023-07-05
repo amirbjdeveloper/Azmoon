@@ -11,9 +11,9 @@ class MysqlBaseRepository implements RepositoryInterface
 
     }
 
-    public function paginate(string $search=null,int $page,int $pagesize=20)
+    public function paginate(string $search=null,int $page,int $pagesize=20) : array
     {
-        
+        return [];
     }
 
     public function update(int $id,array $data)
@@ -26,9 +26,9 @@ class MysqlBaseRepository implements RepositoryInterface
 
     }
 
-    public function delete(int $id)
+    public function delete(int $id):bool
     {
-
+        return true;
     }
 
     public function deleteBy(array $where)

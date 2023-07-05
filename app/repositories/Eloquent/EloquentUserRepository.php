@@ -3,6 +3,7 @@
 namespace App\repositories\Eloquent;
 
 use App\Entities\User\UserEloquentEntity;
+use App\Entities\User\UserEntity;
 use App\Models\User;
 use App\repositories\Contracts\UserRepositoryInterface;
 
@@ -14,5 +15,14 @@ class EloquentUserRepository extends EloquentBaseRepository implements UserRepos
     {
         $newUser = parent::create($data);
         return new UserEloquentEntity($newUser);
+    }
+
+    public function update(int $id, array $data): UserEntity
+    {
+        if (!parent::update($id,$data)) {
+           throw new \Exception('کاربر بروزرسانی نشد');
+        }
+
+        return new UserEloquentEntity(parent::find($id));
     }
 }
