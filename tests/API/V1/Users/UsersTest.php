@@ -2,17 +2,25 @@
 
 namespace Tests\API\V1\Users;
 
+use App\repositories\Contracts\UserRepositoryInterface;
 use Tests\TestCase;
 
 class UsersTest extends TestCase 
 {
+
+    public function setUp(): void
+    {
+        parent::setUp();
+        $this->artisan('migrate:refresh');
+    }
+
     public function test_should_it_can_create_a_new_user()
     {
         $response = $this->call('POST','api/v1/users',[
             'full_name' => 'Amir',
             'email' => 'Amir@gmail.com',
             'mobile' => '09121112222',
-            'password' => '123456'
+            'password' => '@$$LLssoi983'
         ]);
 
         $this->assertEquals(201,$response->status());
@@ -37,12 +45,13 @@ class UsersTest extends TestCase
 
     public function test_should_update_the_inforamtion_of_user()
     {
+        $user = $this->createUsers()[0];
         $number = rand(1,100);
         $response = $this->call('PUT','api/v1/users',[
-            'id' => '4',
-            'full_name' => 'Amir-updated-'.$number,
-            'email' => 'Amirrrupdate'.$number.'@gmail.com',
-            'mobile' => '02121112222',
+            'id' => (string)$user->getId(),
+            'full_name' => 'test-updated-'.$number,
+            'email' => 'testUpdated'.$number.'@gmail.com',
+            'mobile' => '09126667777',
         ]);
 
         $this->assertEquals(200,$response->status());
@@ -66,8 +75,9 @@ class UsersTest extends TestCase
 
     public function test_should_update_user_password()
     {
+        $user = $this->createUsers()[0];
         $response = $this->call('PUT','api/v1/users/change-password',[
-            'id' => '2',
+            'id' => (string)$user->getId(),
             'password' => '@$$LLssoi983',
             'password_reapet' => '@$$LLssoi983'
         ]);
@@ -93,8 +103,9 @@ class UsersTest extends TestCase
 
     public function test_should_delete_a_user()
     {
+        $user = $this->createUsers()[0];
         $response = $this->call('DELETE','api/v1/users',[
-            'id' => '3'
+            'id' => (string)$user->getId()
         ]);
 
         $this->assertEquals(200,$response->status());
@@ -114,6 +125,7 @@ class UsersTest extends TestCase
 
     public function test_should_get_users()
     {
+        $this->createUsers(30);
         $pagesize = 3;
         $response = $this->call('GET','api/v1/users',[
             'page' => 1,
@@ -134,7 +146,7 @@ class UsersTest extends TestCase
     public function test_should_get_filterd_users()
     {
         $pagesize = 3;
-        $userEmail = 'Amir@gmail.com';
+        $userEmail = 'test@gmail.com';
         $response = $this->call('GET','api/v1/users',[
             'search' => $userEmail, 
             'page' => 1,
@@ -143,12 +155,34 @@ class UsersTest extends TestCase
 
         $data = json_decode($response->getContent(),true);
 
-        $this->assertEquals($data['data']['email'],$userEmail);
+        foreach ($data['data'] as $user) {
+            $this->assertEquals($user['email'],$userEmail);
+        }
+        
         $this->assertEquals(200,$response->status());
         $this->seeJsonStructure([
             'success',
             'message',
             'data'
         ]);
+    }
+
+    private function createUsers(int $count=1) : array
+    {
+        $userRepository = $this->app->make(UserRepositoryInterface::class);
+
+        $userData = [
+            'full_name' => 'test',
+            'email' => 'test@gmail.com',
+            'mobile' => '09391112222'
+        ];
+
+        $users = [];
+
+        foreach (range(0,$count) as $item) {
+            $users[] = $userRepository->create($userData);
+        }
+
+        return $users;
     }
 }
