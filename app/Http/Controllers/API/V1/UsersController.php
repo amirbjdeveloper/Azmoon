@@ -34,7 +34,7 @@ class UsersController extends ApiController
             'password' => 'min:6|required|regex:/^.*(?=.{3,})(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[\d\x])(?=.*[!$#%]).*$/'
         ]);
 
-        $newUser = $this->userRepository->create([
+        $createdUser = $this->userRepository->create([
             'full_name' => $request->full_name,
             'email' => $request->email,
             'mobile' => $request->mobile,
@@ -42,10 +42,10 @@ class UsersController extends ApiController
         ]);
 
         return $this->respondCreated('کاربر با موفقیت ایجاد شد', [
-            'full_name' => $newUser->getFullName(),
-            'email' => $newUser->getEmail(),
-            'mobile' => $newUser->getMobile(),
-            'password' => $newUser->getPassword()
+            'full_name' => $createdUser->getFullName(),
+            'email' => $createdUser->getEmail(),
+            'mobile' => $createdUser->getMobile(),
+            'password' => $createdUser->getPassword()
         ]);
 
     }

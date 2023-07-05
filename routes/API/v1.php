@@ -11,4 +11,8 @@ $router->group(['prefix' => 'api/v1'], function () use ($router) {
         $router->put('change-password', 'API\V1\UsersController@updatePassword');
         $router->delete('', 'API\V1\UsersController@delete');
     });
+
+    $router->group(['prefix' => 'categories'], function () use ($router) {
+        $router->post('', 'API\V1\CategoriesController@store');
+    });
 });

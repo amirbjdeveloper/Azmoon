@@ -13,8 +13,8 @@ class EloquentUserRepository extends EloquentBaseRepository implements UserRepos
 
     public function create(array $data)
     {
-        $newUser = parent::create($data);
-        return new UserEloquentEntity($newUser);
+        $createdUser = parent::create($data);
+        return new UserEloquentEntity($createdUser);
     }
 
     public function update(int $id, array $data): UserEntity
