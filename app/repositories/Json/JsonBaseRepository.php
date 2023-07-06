@@ -51,7 +51,7 @@ class JsonBaseRepository implements RepositoryInterface
         return false;
     }
 
-    public function paginate(string $search=null,int $page,int $pagesize=20): array
+    public function paginate(string $search=null,int $page,int $pagesize=20,array $columns = []): array
     {
         $users = json_decode(file_get_contents(base_path().'/users.json'),true);
 
