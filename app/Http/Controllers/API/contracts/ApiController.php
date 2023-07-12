@@ -13,6 +13,16 @@ class ApiController extends Controller
         return $this->setStatusCode(200)->respond($message,true,$data);
     }
 
+    public function respondInvalidValidation(string $message)
+    {
+        return $this->setStatusCode(405)->respond($message,false);
+    }
+
+    public function respondForbidden(string $message)
+    {
+        return $this->setStatusCode(403)->respond($message,false);
+    }
+
     public function respondInternalError(string $message)
     {
         return $this->setStatusCode(500)->respond($message);

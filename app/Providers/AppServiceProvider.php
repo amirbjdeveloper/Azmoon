@@ -3,10 +3,12 @@
 namespace App\Providers;
 
 use App\repositories\Contracts\CategoryRepositoryInterface;
+use App\repositories\Contracts\QuizRepositoryInterface;
 use Illuminate\Support\ServiceProvider;
 use App\repositories\Eloquent\EloquentUserRepository;
 use App\repositories\Contracts\UserRepositoryInterface;
 use App\repositories\Eloquent\EloquentCategoryRepository;
+use App\repositories\Eloquent\EloquentQuizRepository;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -24,5 +26,6 @@ class AppServiceProvider extends ServiceProvider
     {
         $this->app->bind(UserRepositoryInterface::class,EloquentUserRepository::class);
         $this->app->bind(CategoryRepositoryInterface::class,EloquentCategoryRepository::class);
+        $this->app->bind(QuizRepositoryInterface::class,EloquentQuizRepository::class);
     }
 }
