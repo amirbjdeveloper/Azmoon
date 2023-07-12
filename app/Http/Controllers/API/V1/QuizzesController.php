@@ -13,6 +13,19 @@ class QuizzesController extends ApiController
     {
     }
 
+    public function index(Request $request)
+    {
+        $this->validate($request,[
+            'search' => 'nullable|string',
+            'page' => 'required|numeric',
+            'pagesize' => 'nullable|numeric'
+        ]);
+
+        $quizzes = $this->quizRepository->paginate($request->search,$request->page,$request->pagesize??0,['title','description','start_date','duration']);
+
+        return $this->respondSuccess('آزمون ها',$quizzes);
+    }
+
     public function store(Request $request)
     {
         
