@@ -43,4 +43,9 @@ class QuizEloquentEntity implements QuizEntity
     {
         return $this->quiz->duration;
     }
+
+    public function getIsAcvive(): bool
+    {
+        return $this->quiz->is_active;
+    }
 }

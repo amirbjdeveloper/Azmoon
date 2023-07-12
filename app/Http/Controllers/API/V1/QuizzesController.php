@@ -34,7 +34,8 @@ class QuizzesController extends ApiController
             'title' => 'required|string',
             'description' => 'required|string',
             'start_date' => 'required|date',
-            'duration' => 'required|date'
+            'duration' => 'required|date',
+            'is_active' => 'required|bool'
         ]);
 
         $startDate = Carbon::parse($request->start_date);
@@ -49,7 +50,8 @@ class QuizzesController extends ApiController
             'title' => $request->title,
             'description' => $request->description,
             'start_date' => $startDate->format('Y-m-d'),
-            'duration' => $duration
+            'duration' => $duration,
+            'is_active' => $request->is_active
         ]);
 
         return $this->respondCreated('آزمون ساخته شد',[
@@ -57,7 +59,8 @@ class QuizzesController extends ApiController
             'title' => $createdQuiz->getTitle(),
             'description' => $createdQuiz->getDescription(),
             'start_date' => $createdQuiz->getStartDate(),
-            'duration' => Carbon::parse($createdQuiz->getDuration())->timestamp
+            'duration' => Carbon::parse($createdQuiz->getDuration())->timestamp,
+            'is_active' => $createdQuiz->getIsAcvive()
         ]);
     }
 
@@ -76,5 +79,47 @@ class QuizzesController extends ApiController
         }
 
         return $this->respondSuccess('آزمون حذف شد');
+    }
+
+    public function update(Request $request)
+    {
+        $this->validate($request,[
+            'id' => 'required|numeric',
+            'category_id' => 'required|numeric',
+            'title' => 'required|string',
+            'description' => 'required|string',
+            'start_date' => 'required|date',
+            'duration' => 'required|date',
+            'is_active' => 'required|bool'
+        ]);
+
+        $startDate = Carbon::parse($request->start_date);
+        $duration = Carbon::parse($request->duration);
+
+        if ($duration->timestamp < $startDate->timestamp) {
+           return $this->respondInvalidValidation('تاریخ شروع باید از زمان آزمون بزرگتر باشد');
+        }
+
+        try {
+            $updatedQuiz = $this->quizRepository->update($request->id,[
+                'category_id' => $request->category_id,
+                'title' => $request->title,
+                'description' => $request->description,
+                'start_date' => $startDate->format('Y-m-d'),
+                'duration' => $duration,
+                'is_active' => $request->is_active
+            ]);
+        } catch (\Exception $e) {
+            return $this->respondInternalError('آزمون بروزرسانی نشد');
+        }
+
+        return $this->respondSuccess('آزمون بروزرسانی شد',[
+            'category_id' => $updatedQuiz->getCategoryId(),
+            'title' => $updatedQuiz->getTitle(),
+            'description' => $updatedQuiz->getDescription(),
+            'start_date' => $updatedQuiz->getStartDate(),
+            'duration' => Carbon::parse($updatedQuiz->getDuration())->timestamp,
+            'is_active' => $updatedQuiz->getIsAcvive()
+        ]);
     }
 }
