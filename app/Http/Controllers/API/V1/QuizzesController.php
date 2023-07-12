@@ -47,4 +47,21 @@ class QuizzesController extends ApiController
             'duration' => Carbon::parse($createdQuiz->getDuration())->timestamp
         ]);
     }
+
+    public function delete(Request $request)
+    {
+        $this->validate($request,[
+            'id' => 'required|numeric'
+        ]);
+
+        if (!$this->quizRepository->find($request->id)) {
+            return $this->respondNotFound('آزمون وجود ندارد');
+        }
+
+        if (!$this->quizRepository->delete($request->id)) {
+            return $this->respondInternalError('آزمون حذف نشد');
+        }
+
+        return $this->respondSuccess('آزمون حذف شد');
+    }
 }
