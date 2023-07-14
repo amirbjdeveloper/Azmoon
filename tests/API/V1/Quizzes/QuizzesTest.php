@@ -5,7 +5,6 @@ namespace Tests\API\V1\Quizzes;
 use app;
 use Carbon\Carbon;
 use Tests\TestCase;
-use App\repositories\Contracts\QuizRepositoryInterface;
 
 class QuizzesTest extends TestCase
 {
@@ -166,32 +165,5 @@ class QuizzesTest extends TestCase
                 'is_active',
             ]
         ]);
-    }
-
-    private function createQuiz(int $count=1, array $data=[]): array
-    {
-        $quizRepository = $this->app->make(QuizRepositoryInterface::class);
-
-        $category = $this->createCategories()[0];
-
-        $startDate = Carbon::now()->addDay();
-        $duration = Carbon::now()->addDay();
-
-
-        $quizData = empty($data) ? [
-            'category_id' => $category->getId(),
-            'title' => 'Quiz Test',
-            'description' => 'This is a new Quiz for test',
-            'start_date' => $startDate,
-            'duration' => $duration->addMinutes(30)
-        ] : $data;
-
-        $quizzes = [];
-
-        foreach (range(0, $count) as $item) {
-            $quizzes[] = $quizRepository->create($quizData);
-        }
-
-        return $quizzes;
     }
 }

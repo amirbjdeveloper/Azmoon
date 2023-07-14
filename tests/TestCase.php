@@ -2,7 +2,9 @@
 
 namespace Tests;
 
+use Carbon\Carbon;
 use Laravel\Lumen\Testing\TestCase as BaseTestCase;
+use App\repositories\Contracts\QuizRepositoryInterface;
 use App\repositories\Contracts\CategoryRepositoryInterface;
 
 abstract class TestCase extends BaseTestCase
@@ -33,5 +35,32 @@ abstract class TestCase extends BaseTestCase
         }
 
         return $categories;
+    }
+
+    protected function createQuiz(int $count=1, array $data=[]): array
+    {
+        $quizRepository = $this->app->make(QuizRepositoryInterface::class);
+
+        $category = $this->createCategories()[0];
+
+        $startDate = Carbon::now()->addDay();
+        $duration = Carbon::now()->addDay();
+
+
+        $quizData = empty($data) ? [
+            'category_id' => $category->getId(),
+            'title' => 'Quiz Test',
+            'description' => 'This is a new Quiz for test',
+            'start_date' => $startDate,
+            'duration' => $duration->addMinutes(30)
+        ] : $data;
+
+        $quizzes = [];
+
+        foreach (range(0, $count) as $item) {
+            $quizzes[] = $quizRepository->create($quizData);
+        }
+
+        return $quizzes;
     }
 }
