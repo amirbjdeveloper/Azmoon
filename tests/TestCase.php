@@ -4,10 +4,12 @@ namespace Tests;
 
 use Carbon\Carbon;
 use App\Consts\QuestionStatus;
+use App\Consts\AnswerSheetsStatus;
 use Laravel\Lumen\Testing\TestCase as BaseTestCase;
 use App\repositories\Contracts\QuizRepositoryInterface;
 use App\repositories\Contracts\CategoryRepositoryInterface;
 use App\repositories\Contracts\QuestionRepositoryInterface;
+use App\repositories\Contracts\AnswerSheetRepositoryInterface;
 
 abstract class TestCase extends BaseTestCase
 {
@@ -93,4 +95,32 @@ abstract class TestCase extends BaseTestCase
 
         return $questions;
     }
+
+    protected function createAnswerSheet(int $count=1,array $data=[]):array
+    {
+        $answerSheetRepository = $this->app->make(AnswerSheetRepositoryInterface::class);
+
+        $quiz = $this->createQuiz()[0];
+
+        $answerSheetData = empty($data) ? [
+            'quiz_id' => $quiz->getId(),
+            'answers' => json_encode([
+                1 => 3,
+                2 => 3,
+                3 => 4
+            ]),
+            'status' => AnswerSheetsStatus::PASSED,
+            'score' => 10,
+            'finished_at' => Carbon::now()
+        ] : $data;
+
+        $answerSheets = [];
+
+        foreach (range(0, $count) as $item) {
+            $answerSheets[] = $answerSheetRepository->create($answerSheetData);
+        }
+
+        return $answerSheets;
+    }
+
 }
