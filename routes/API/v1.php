@@ -32,4 +32,8 @@ $router->group(['prefix' => 'api/v1'], function () use ($router) {
         $router->delete('', 'API\V1\QuestionsController@delete');
         $router->put('', 'API\V1\QuestionsController@update');
     });
+
+    $router->group(['prefix' => 'answer-sheets'], function () use ($router) {
+        $router->post('', 'API\V1\AnswerSheetsController@store');
+    });
 });
